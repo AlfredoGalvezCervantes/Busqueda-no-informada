@@ -1,0 +1,52 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+// Definición de un grafo no ponderado como una lista de adyacencia
+vector<vector<int>> graph;
+
+// Función de búsqueda en profundidad (DFS)
+bool dfs(int current, int goal, vector<bool>& visited) {
+    if (current == goal) {
+        return true;  // Encontramos el nodo objetivo
+    }
+    
+    visited[current] = true;
+    
+    for (int neighbor : graph[current]) {
+        if (!visited[neighbor]) {
+            if (dfs(neighbor, goal, visited)) {
+                return true;  // Si se encuentra el objetivo en la llamada recursiva, salimos
+            }
+        }
+    }
+    
+    return false;  // No se encontró el nodo objetivo
+}
+
+int main() {
+    // Crear un grafo de ejemplo (no ponderado)
+    int numNodes = 7;
+    graph.resize(numNodes);
+    graph[0] = {1, 2};
+    graph[1] = {3, 4};
+    graph[2] = {5};
+    graph[3] = {};
+    graph[4] = {6};
+    graph[5] = {};
+    graph[6] = {};
+    
+    int startNode = 0;
+    int goalNode = 6;
+    
+    vector<bool> visited(numNodes, false);
+    
+    if (dfs(startNode, goalNode, visited)) {
+        cout << "El nodo objetivo " << goalNode << " se encontró a través de DFS." << endl;
+    } else {
+        cout << "El nodo objetivo " << goalNode << " no se encontró a través de DFS." << endl;
+    }
+    
+    return 0;
+}
