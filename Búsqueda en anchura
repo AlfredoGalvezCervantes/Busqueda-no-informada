@@ -1,0 +1,59 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+
+using namespace std;
+
+// Definición de un grafo no ponderado como una lista de adyacencia
+vector<vector<int>> graph;
+
+// Función para realizar la búsqueda en anchura (BFS)
+bool bfs(int start, int goal) {
+    vector<bool> visited(graph.size(), false);
+    queue<int> que;
+    
+    que.push(start);
+    visited[start] = true;
+    
+    while (!que.empty()) {
+        int current = que.front();
+        que.pop();
+        
+        if (current == goal) {
+            return true;  // Encontramos el nodo objetivo
+        }
+        
+        for (int neighbor : graph[current]) {
+            if (!visited[neighbor]) {
+                que.push(neighbor);
+                visited[neighbor] = true;
+            }
+        }
+    }
+    
+    return false;  // No se encontró el nodo objetivo
+}
+
+int main() {
+    // Crear un grafo de ejemplo (no ponderado)
+    int numNodes = 7;
+    graph.resize(numNodes);
+    graph[0] = {1, 2};
+    graph[1] = {3, 4};
+    graph[2] = {5};
+    graph[3] = {};
+    graph[4] = {6};
+    graph[5] = {};
+    graph[6] = {};
+    
+    int startNode = 0;
+    int goalNode = 6;
+    
+    if (bfs(startNode, goalNode)) {
+        cout << "El nodo objetivo " << goalNode << " se encontró a través de BFS." << endl;
+    } else {
+        cout << "El nodo objetivo " << goalNode << " no se encontró a través de BFS." << endl;
+    }
+    
+    return 0;
+}
