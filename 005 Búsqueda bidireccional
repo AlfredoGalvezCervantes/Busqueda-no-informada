@@ -1,0 +1,82 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <unordered_set>
+
+using namespace std;
+
+// Definición de un grafo no ponderado como una lista de adyacencia
+vector<vector<int>> graph;
+
+// Función para realizar la búsqueda bidireccional
+int bidirectionalSearch(int start, int goal) {
+    unordered_set<int> visitedStart;
+    unordered_set<int> visitedGoal;
+    queue<int> queueStart;
+    queue<int> queueGoal;
+    
+    visitedStart.insert(start);
+    visitedGoal.insert(goal);
+    queueStart.push(start);
+    queueGoal.push(goal);
+    
+    while (!queueStart.empty() && !queueGoal.empty()) {
+        // Extender la búsqueda desde el nodo de inicio
+        int currentStart = queueStart.front();
+        queueStart.pop();
+        
+        for (int neighbor : graph[currentStart]) {
+            if (visitedGoal.count(neighbor)) {
+                return currentStart + neighbor;  // Se encontró un camino entre las dos búsquedas
+            }
+            
+            if (!visitedStart.count(neighbor)) {
+                visitedStart.insert(neighbor);
+                queueStart.push(neighbor);
+            }
+        }
+        
+        // Extender la búsqueda desde el nodo objetivo
+        int currentGoal = queueGoal.front();
+        queueGoal.pop();
+        
+        for (int neighbor : graph[currentGoal]) {
+            if (visitedStart.count(neighbor)) {
+                return currentGoal + neighbor;  // Se encontró un camino entre las dos búsquedas
+            }
+            
+            if (!visitedGoal.count(neighbor)) {
+                visitedGoal.insert(neighbor);
+                queueGoal.push(neighbor);
+            }
+        }
+    }
+    
+    return -1;  // No se encontró un camino entre las dos búsquedas
+}
+
+int main() {
+    // Crear un grafo de ejemplo (no ponderado)
+    int numNodes = 7;
+    graph.resize(numNodes);
+    graph[0] = {1, 2};
+    graph[1] = {3, 4};
+    graph[2] = {5};
+    graph[3] = {};
+    graph[4] = {6};
+    graph[5] = {};
+    graph[6] = {};
+    
+    int startNode = 0;
+    int goalNode = 6;
+    
+    int result = bidirectionalSearch(startNode, goalNode);
+    
+    if (result != -1) {
+        cout << "Se encontró un camino entre " << startNode << " y " << goalNode << " con costo " << result << endl;
+    } else {
+        cout << "No se encontró un camino entre " << startNode << " y " << goalNode << endl;
+    }
+    
+    return 0;
+}
